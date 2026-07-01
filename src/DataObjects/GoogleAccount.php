@@ -10,5 +10,6 @@ class GoogleAccount
         public readonly string $name,
         public readonly ?string $avatar = null,
         public readonly ?string $hostedDomain = null,
+        public readonly bool $emailVerified = false,
     ) {}
 }
