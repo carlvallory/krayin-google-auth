@@ -14,6 +14,7 @@ class KrayinGoogleAuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/routes.php');
 
         // Empuja las credenciales a services.google para Socialite sin editar config/services.php
         config(['services.google' => config('google-auth.credentials')]);
