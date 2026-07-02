@@ -22,7 +22,14 @@ class UninstallCommand extends Command
             $fallbackName = config('google-auth.uninstall_fallback_role', 'Administrator');
             $fallback = DB::table('roles')->where('name', $fallbackName)->first();
 
-            if ($fallback) {
+            if (! $fallback) {
+                $orphanCount = DB::table('users')->where('role_id', $basico->id)->count();
+                if ($orphanCount > 0) {
+                    $this->error("El rol de respaldo \"{$fallbackName}\" no existe y hay {$orphanCount} usuario(s) con el rol Básico. Crea ese rol antes de desinstalar.");
+                    return self::FAILURE;
+                }
+                $this->warn("El rol de respaldo \"{$fallbackName}\" no existe, pero no hay usuarios con rol Básico. Continuando.");
+            } else {
                 DB::table('users')->where('role_id', $basico->id)->update(['role_id' => $fallback->id]);
             }
 
@@ -33,7 +40,7 @@ class UninstallCommand extends Command
         // 2. Quita las columnas agregadas a users.
         Schema::table('users', function (Blueprint $table) {
             if (Schema::hasColumn('users', 'google_id')) {
-                $table->dropUnique('users_google_id_unique');
+                $table->dropUnique(['google_id']);
                 $table->dropColumn('google_id');
             }
             if (Schema::hasColumn('users', 'auth_provider')) {
