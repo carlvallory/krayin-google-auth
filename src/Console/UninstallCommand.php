@@ -38,9 +38,22 @@ class UninstallCommand extends Command
         }
 
         // 2. Quita las columnas agregadas a users.
+        // Primero intenta eliminar el índice único (puede fallar si ya fue eliminado en una
+        // ejecución parcial anterior); en ese caso emite advertencia y continúa.
+        if (Schema::hasColumn('users', 'google_id')) {
+            try {
+                Schema::table('users', function (Blueprint $table) {
+                    $table->dropUnique(['google_id']);
+                });
+            } catch (\Throwable $e) {
+                $this->warn('Índice único de google_id no encontrado, se omite.');
+            }
+        }
+
+        // Luego elimina las columnas en una llamada separada para que un fallo
+        // del índice no aborte el drop de columnas.
         Schema::table('users', function (Blueprint $table) {
             if (Schema::hasColumn('users', 'google_id')) {
-                $table->dropUnique(['google_id']);
                 $table->dropColumn('google_id');
             }
             if (Schema::hasColumn('users', 'auth_provider')) {
