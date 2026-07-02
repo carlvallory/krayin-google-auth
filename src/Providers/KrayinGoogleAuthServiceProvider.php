@@ -17,6 +17,12 @@ class KrayinGoogleAuthServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/../Routes/routes.php');
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'google-auth');
 
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \CarlVallory\KrayinGoogleAuth\Console\UninstallCommand::class,
+            ]);
+        }
+
         // Empuja las credenciales a services.google para Socialite sin editar config/services.php
         config(['services.google' => config('google-auth.credentials')]);
 
