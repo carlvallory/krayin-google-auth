@@ -126,7 +126,7 @@ Si el acceso vía Google falla (credenciales revocadas, servicio caído, etc.), 
 GOOGLE_AUTH_SHOW_PASSWORD_LOGIN=true
 ```
 
-Al establecer esta variable, el CSS que oculta el formulario nativo deja de inyectarse y el login con contraseña vuelve a estar disponible.
+Al establecer esta variable, el CSS que oculta el formulario nativo deja de inyectarse y el login con contraseña vuelve a estar disponible. Ten en cuenta que el login con contraseña solo funciona para usuarios que tengan un `password` definido; los usuarios creados exclusivamente por Google tienen `password=NULL` y no pueden usar el formulario nativo.
 
 ---
 
