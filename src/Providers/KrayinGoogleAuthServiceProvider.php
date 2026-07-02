@@ -9,6 +9,7 @@ class KrayinGoogleAuthServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../Config/google-auth.php', 'google-auth');
+        $this->mergeConfigFrom(__DIR__ . '/../Config/acl.php', 'acl');
     }
 
     public function boot(): void

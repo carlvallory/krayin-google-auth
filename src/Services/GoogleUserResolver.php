@@ -30,7 +30,8 @@ class GoogleUserResolver
             }
 
             if (! $existingByEmail->google_id) {
-                $existingByEmail->google_id = $account->googleId;
+                $existingByEmail->google_id     = $account->googleId;
+                $existingByEmail->auth_provider = 'google';
                 $existingByEmail->save();
             }
 
@@ -56,16 +57,17 @@ class GoogleUserResolver
         // Auto-aprobación solo con dominio permitido Y correo verificado por Google.
         $autoApprove = $isAllowedDomain && $account->emailVerified;
 
-        $user = User::create([
-            'name'          => $account->name,
-            'email'         => $account->email,
-            'google_id'     => $account->googleId,
-            'image'         => $account->avatar,
-            'auth_provider' => 'google',
-            'role_id'       => $role->id,
-            'status'        => $autoApprove ? 1 : 0,
-            'password'      => null,
+        $user = new User([
+            'name'     => $account->name,
+            'email'    => $account->email,
+            'image'    => $account->avatar,
+            'role_id'  => $role->id,
+            'status'   => $autoApprove ? 1 : 0,
+            'password' => null,
         ]);
+        $user->google_id     = $account->googleId;
+        $user->auth_provider = 'google';
+        $user->save();
 
         return new ResolutionResult($user, $autoApprove, $autoApprove ? null : 'pending');
     }

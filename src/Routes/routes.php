@@ -9,7 +9,7 @@ Route::middleware('web')->group(function () {
     Route::get('/login/google/callback', [GoogleAuthController::class, 'callback'])->name('google-auth.callback');
 });
 
-// Aprobación de usuarios pendientes — protegida por el guard admin (alias 'user' = Bouncer).
+// Aprobación de usuarios pendientes — protegida por 'user' guard (auth) + permiso ACL 'settings.user.users'.
 Route::middleware(['web', 'user'])->prefix('admin/google-auth')->group(function () {
     Route::get('/pending', [PendingUserController::class, 'index'])
         ->name('google-auth.pending.index');
