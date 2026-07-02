@@ -161,7 +161,7 @@ El comando realiza las siguientes acciones en orden:
 3. Elimina el índice único de `google_id` (con protección ante doble ejecución parcial).
 4. Elimina las columnas `users.google_id` y `users.auth_provider`.
 
-> **Condición de aborto**: si el rol de respaldo (`Administrator` por defecto) no existe **y** hay usuarios con rol `Básico`, el comando falla con un mensaje de error y no realiza ningún cambio. Crear el rol de respaldo antes de volver a ejecutar.
+> **Condición de aborto**: si el rol de respaldo (`Administrator` por defecto) no existe **y** hay usuarios con rol `Básico`, el comando falla con un mensaje de error y no realiza ningún cambio. Crear el rol de respaldo antes de volver a ejecutar. Si el rol de respaldo no existe pero ningún usuario tiene el rol Básico, el comando emite una advertencia y continúa con la desinstalación.
 
 ### 2. Quitar el paquete de Composer
 
