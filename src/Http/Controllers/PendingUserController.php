@@ -9,7 +9,7 @@ class PendingUserController extends Controller
 {
     public function index()
     {
-        abort_unless(bouncer()->hasPermission('settings.user.users'), 401);
+        abort_unless(bouncer()->hasPermission('settings.user.users.google_pending'), 401);
 
         $pending = User::where('auth_provider', 'google')
             ->where('status', 0)
@@ -20,7 +20,7 @@ class PendingUserController extends Controller
 
     public function approve(int $id)
     {
-        abort_unless(bouncer()->hasPermission('settings.user.users'), 401);
+        abort_unless(bouncer()->hasPermission('settings.user.users.google_pending'), 401);
 
         $user = User::where('id', $id)
             ->where('status', 0)
