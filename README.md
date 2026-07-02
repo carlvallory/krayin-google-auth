@@ -156,10 +156,18 @@ php artisan google-auth:uninstall
 
 El comando realiza las siguientes acciones en orden:
 
-1. Busca el rol `Básico`; si existe, reasigna todos los usuarios que lo tengan al rol definido en `uninstall_fallback_role` (por defecto `Administrator`).
-2. Elimina el rol `Básico`.
-3. Elimina el índice único de `google_id` (con protección ante doble ejecución parcial).
-4. Elimina las columnas `users.google_id` y `users.auth_provider`.
+1. Busca el rol `Básico`; si existe y hay usuarios asignados a él, muestra una advertencia e solicita confirmación antes de reasignarlos al rol de respaldo.
+2. Reasigna los usuarios del rol `Básico` al rol definido en `uninstall_fallback_role` (por defecto `Administrator`).
+3. Elimina el rol `Básico`.
+4. Elimina el índice único de `google_id` (con protección ante doble ejecución parcial).
+5. Elimina las columnas `users.google_id` y `users.auth_provider`.
+
+> **Confirmación interactiva**: si hay usuarios con rol `Básico`, el comando solicita confirmación antes de reasignarlos al rol de respaldo (que puede tener más privilegios). Responder `no` cancela la operación sin realizar ningún cambio.
+
+> **Modo no interactivo** (scripts automatizados): usar `--force` para omitir la confirmación:
+> ```bash
+> php artisan google-auth:uninstall --force
+> ```
 
 > **Condición de aborto**: si el rol de respaldo (`Administrator` por defecto) no existe **y** hay usuarios con rol `Básico`, el comando falla con un mensaje de error y no realiza ningún cambio. Crear el rol de respaldo antes de volver a ejecutar. Si el rol de respaldo no existe pero ningún usuario tiene el rol Básico, el comando emite una advertencia y continúa con la desinstalación.
 

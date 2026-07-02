@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 
 class UninstallCommand extends Command
 {
-    protected $signature = 'google-auth:uninstall';
+    protected $signature = 'google-auth:uninstall {--force : Omitir confirmación interactiva (para scripts automatizados)}';
 
     protected $description = 'Revierte el esquema de KrayinGoogleAuth (rol Básico + columnas en users).';
 
@@ -30,6 +30,18 @@ class UninstallCommand extends Command
                 }
                 $this->warn("El rol de respaldo \"{$fallbackName}\" no existe, pero no hay usuarios con rol Básico. Continuando.");
             } else {
+                $count = DB::table('users')->where('role_id', $basico->id)->count();
+
+                if ($count > 0) {
+                    $this->warn("$count usuario(s) del rol Básico serán reasignados al rol '{$fallbackName}' (revise sus privilegios tras la desinstalación).");
+
+                    if (! $this->option('force') && ! $this->confirm('¿Continuar?')) {
+                        $this->error('Desinstalación cancelada. No se realizaron cambios.');
+
+                        return self::FAILURE;
+                    }
+                }
+
                 DB::table('users')->where('role_id', $basico->id)->update(['role_id' => $fallback->id]);
             }
 
